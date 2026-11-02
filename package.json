@@ -13,6 +13,7 @@
     "appium:drivers:ios": "appium driver install xcuitest",
     "typecheck": "tsc --noEmit",
     "preflight:mobile": "tsx scripts/mobile-preflight.ts",
+    "test:smoke:offline": "tsx --test tests/smoke/*.test.ts",
     "test:preflight": "tsx --test tests/preflight/*.test.ts",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" \"docs/**/*.md\" \"features/**/*.ts\" \"*.ts\" \"*.json\" \".github/workflows/*.yml\" \".github/copilot-instructions.md\" \"README.md\"",
