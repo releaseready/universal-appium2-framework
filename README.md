@@ -83,9 +83,18 @@ npm run typecheck
 npm run lint
 npm run format:check
 npm run test:preflight
+npm run test:smoke:offline
 ```
 
-GitHub Actions runs these checks for pushes and pull requests. Mobile E2E execution is platform- and app-dependent; add the app build or secure app download step for your product before wiring the test commands into CI.
+The offline smoke checks exercise only the hierarchy-validation seam with
+synthetic strings; they do not start Appium or prove an app launch. The
+`test:android` and `test:ios` commands remain the live, device-dependent smoke
+entrypoints and require an approved target and platform tooling. The current
+GitHub Actions workflow runs type-checking, lint, and formatting checks; these
+offline test commands remain separate and do not imply hosted mobile execution.
+
+Mobile E2E execution is platform- and app-dependent; add the app build or secure
+app download step for your product before wiring the test commands into CI.
 
 ## Reports
 
