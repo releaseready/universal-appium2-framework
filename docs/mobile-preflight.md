@@ -107,6 +107,11 @@ initialization is tooling, not a preflight subprocess capability. Preflight itse
 never spawns a subprocess. No device, emulator or Appium service runs. The guards
 forbid network/service/process calls, filesystem writes and app-content reads
 after initialization; static import review complements them.
+The CLI cases and the guard's forbidden-operation self-test share the same
+guarded Node launcher, so guard loading, process limits and environment canaries
+cannot drift between those paths. Metadata read, parse and shape failures share
+one diagnostic emitter; regression checks preserve their distinct messages,
+states, ordering and unchecked-runtime result.
 
 For a red-to-green demonstration, deliberately remove the canonical containment
 rejection in `checkApp`, run the S04 test by name, observe a nonzero test exit, then

@@ -177,6 +177,59 @@ test("S03/S06 Given actual local dependency metadata, When missing, malformed, o
   }
 });
 
+test("S03/S06 Given metadata failures, When reported, Then preserve dependency and unchecked runtime diagnostics in order", async () => {
+  for (const failure of [
+    {
+      metadata: async () => {
+        throw new Error("private read failure");
+      },
+      state: "unavailable",
+      code: "METADATA_UNAVAILABLE",
+      message: "Required local dependency metadata could not be checked.",
+      nextAction:
+        "Restore the repository manifest, lockfile and locked dependencies in a separate setup step.",
+    },
+    {
+      metadata: async () => {
+        throw new SyntaxError("private parse failure");
+      },
+      state: "invalid",
+      code: "METADATA_INVALID",
+      message: "Required local dependency metadata could not be checked.",
+      nextAction:
+        "Restore the repository manifest, lockfile and locked dependencies in a separate setup step.",
+    },
+    {
+      metadata: async () => null,
+      state: "invalid",
+      code: "METADATA_INVALID",
+      message: "Required dependency metadata is malformed.",
+      nextAction: "Restore the repository manifest and lockfile.",
+    },
+  ]) {
+    const report = await run(args(root), { metadata: failure.metadata });
+    assert.equal(report.exitCode, 1);
+    assert.deepEqual(report.diagnostics.slice(1, 3), [
+      {
+        check: "dependencies",
+        state: failure.state,
+        code: failure.code,
+        message: failure.message,
+        nextAction: failure.nextAction,
+      },
+      {
+        check: "runtime",
+        state: "not-checked",
+        code: "METADATA_REQUIRED",
+        message: "Node compatibility was not checked.",
+        nextAction: "Restore required metadata and rerun.",
+      },
+    ]);
+    assert.equal(report.diagnostics.length, 9);
+    assert.equal(code(report, "app-path"), "APP_PATH_VALID");
+  }
+});
+
 test("S04 Given colon-containing local names, When checked, Then do not misclassify them as remote URLs", async () => {
   for (const app of ["build:1.apk", "release.v2:final.apk"]) {
     const report = await run(args("ci-run:42", "android", app));

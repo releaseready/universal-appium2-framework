@@ -7,7 +7,7 @@ import type { Report } from "../../src/preflight/index.js";
 import { args, fixture } from "./fixtures.js";
 
 const workspace = process.cwd();
-function cli(argv: string[], appRoot: string) {
+function guardedNode(argv: string[], appRoot: string) {
   // Spawning the actual CLI is test orchestration, never a preflight capability.
   return spawnSync(
     process.execPath,
@@ -16,7 +16,6 @@ function cli(argv: string[], appRoot: string) {
       "tsx",
       "--import",
       resolve("tests/preflight/guard.ts"),
-      resolve("scripts/mobile-preflight.ts"),
       ...argv,
     ],
     {
@@ -31,6 +30,13 @@ function cli(argv: string[], appRoot: string) {
         MOBILE_SECRET: "SECRET_ENV_CANARY",
       },
     },
+  );
+}
+
+function cli(argv: string[], appRoot: string) {
+  return guardedNode(
+    [resolve("scripts/mobile-preflight.ts"), ...argv],
+    appRoot,
   );
 }
 
@@ -89,25 +95,9 @@ test("S01/S05/S07 Given a locked workspace and synthetic APK, When actual CLI ru
 });
 
 test("S05 Given armed test guards, When a forbidden operation is attempted, Then the harness cannot silently pass", () => {
-  const result = spawnSync(
-    process.execPath,
-    [
-      "--import",
-      "tsx",
-      "--import",
-      resolve("tests/preflight/guard.ts"),
-      "-e",
-      "try { fetch('https://example.invalid') } catch {}",
-    ],
-    {
-      encoding: "utf8",
-      timeout: 30_000,
-      env: {
-        ...process.env,
-        TSX_DISABLE_CACHE: "1",
-        PREFLIGHT_TEST_APP_ROOT: workspace,
-      },
-    },
+  const result = guardedNode(
+    ["-e", "try { fetch('https://example.invalid') } catch {}"],
+    workspace,
   );
   assert.equal(result.error, undefined);
   assert.equal(result.status, 86, result.stderr);
