@@ -222,6 +222,28 @@ type Add = (
   action: string,
 ) => void;
 
+function metadataFailure(
+  add: Add,
+  state: "invalid" | "unavailable",
+  message: string,
+  action: string,
+) {
+  add(
+    "dependencies",
+    state,
+    state === "invalid" ? "METADATA_INVALID" : "METADATA_UNAVAILABLE",
+    message,
+    action,
+  );
+  add(
+    "runtime",
+    "not-checked",
+    "METADATA_REQUIRED",
+    "Node compatibility was not checked.",
+    "Restore required metadata and rerun.",
+  );
+}
+
 async function checkMetadata(probes: Probes, add: Add) {
   let metadata: unknown;
   let satisfies: (version: string, range: string) => boolean;
@@ -234,19 +256,11 @@ async function checkMetadata(probes: Probes, add: Add) {
     valid = require("semver/functions/valid");
   } catch (error) {
     const state = error instanceof SyntaxError ? "invalid" : "unavailable";
-    add(
-      "dependencies",
+    metadataFailure(
+      add,
       state,
-      state === "invalid" ? "METADATA_INVALID" : "METADATA_UNAVAILABLE",
       "Required local dependency metadata could not be checked.",
       "Restore the repository manifest, lockfile and locked dependencies in a separate setup step.",
-    );
-    add(
-      "runtime",
-      "not-checked",
-      "METADATA_REQUIRED",
-      "Node compatibility was not checked.",
-      "Restore required metadata and rerun.",
     );
     return;
   }
@@ -260,19 +274,11 @@ async function checkMetadata(probes: Probes, add: Add) {
     !record(metadata.manifest.devDependencies) ||
     !record(metadata.lock.packages)
   ) {
-    add(
-      "dependencies",
+    metadataFailure(
+      add,
       "invalid",
-      "METADATA_INVALID",
       "Required dependency metadata is malformed.",
       "Restore the repository manifest and lockfile.",
-    );
-    add(
-      "runtime",
-      "not-checked",
-      "METADATA_REQUIRED",
-      "Node compatibility was not checked.",
-      "Restore required metadata and rerun.",
     );
     return;
   }
