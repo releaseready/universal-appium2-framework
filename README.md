@@ -84,6 +84,10 @@ Run the same bounded checks before committing and in the existing quality workfl
 npm run check:offline
 ```
 
+The quality workflow installs locked dependencies with `npm ci --ignore-scripts`
+and then invokes the offline checks explicitly. Its command regression test keeps
+dependency lifecycle scripts disabled; it does not authorize mobile setup.
+
 This aggregate runs type-checking, lint, formatting, lint-rule regression checks,
 offline preflight, scenario preparation, and hierarchy-validation tests. Individual
 commands remain available as `typecheck`, `lint`, `format:check`, `test:quality`,
