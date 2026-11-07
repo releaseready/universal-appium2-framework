@@ -78,23 +78,33 @@ The included smoke scenario checks that Appium can retrieve a non-empty native v
 
 ## Quality checks
 
+Run the same bounded checks before committing and in the existing quality workflow:
+
 ```sh
-npm run typecheck
-npm run lint
-npm run format:check
-npm run test:preflight
-npm run test:smoke:offline
+npm run check:offline
 ```
 
-The offline smoke checks exercise only the hierarchy-validation seam with
-synthetic strings; they do not start Appium or prove an app launch. The
+This aggregate runs type-checking, lint, formatting, lint-rule regression checks,
+offline preflight, scenario preparation, and hierarchy-validation tests. Individual
+commands remain available as `typecheck`, `lint`, `format:check`, `test:quality`,
+`test:preflight`, `test:scenarios:offline`, and `test:smoke:offline`.
+
+Type-aware lint rejects promises used as synchronous conditions, void-returning
+callbacks, or object spreads. The regression checks feed invalid and valid code to
+the repository's actual ESLint configuration without executing those snippets.
+This is a focused async guard, not a replacement for Sonar analysis or a claim that
+all Sonar findings are covered. No Sonar gate or scan exclusions are changed.
+
+The offline test commands use Node’s native test runner with the installed tsx
+loader, without the tsx CLI’s separate IPC server. They use synthetic inputs and
+guarded local CLI fixtures. They do not
+start Appium, install drivers, contact a device, or prove an app launch. The
 `test:android` and `test:ios` commands remain the live, device-dependent smoke
-entrypoints and require an approved target and platform tooling. The current
-GitHub Actions workflow runs type-checking, lint, and formatting checks; these
-offline test commands remain separate and do not imply hosted mobile execution.
+entrypoints and require an approved target and platform tooling. Running the
+offline aggregate in CI does not authorize or establish hosted mobile execution.
 
 Mobile E2E execution is platform- and app-dependent; add the app build or secure
-app download step for your product before wiring the test commands into CI.
+app download step for your product before wiring the live test commands into CI.
 
 ## Reports
 

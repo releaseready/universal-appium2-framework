@@ -13,11 +13,14 @@
     "appium:drivers:ios": "appium driver install xcuitest",
     "typecheck": "tsc --noEmit",
     "preflight:mobile": "tsx scripts/mobile-preflight.ts",
-    "test:smoke:offline": "tsx --test tests/smoke/*.test.ts",
-    "test:preflight": "tsx --test tests/preflight/*.test.ts",
+    "test:smoke:offline": "node --import tsx --test tests/smoke/*.test.ts",
+    "test:preflight": "node --import tsx --test tests/preflight/*.test.ts",
     "lint": "eslint .",
     "format": "prettier --write \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" \"docs/**/*.md\" \"features/**/*.ts\" \"*.ts\" \"*.json\" \".github/workflows/*.yml\" \".github/copilot-instructions.md\" \"README.md\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" \"docs/**/*.md\" \"features/**/*.ts\" \"*.ts\" \"*.json\" \".github/workflows/*.yml\" \".github/copilot-instructions.md\" \"README.md\""
+    "format:check": "prettier --check \"src/**/*.ts\" \"scripts/**/*.ts\" \"tests/**/*.ts\" \"docs/**/*.md\" \"features/**/*.ts\" \"*.ts\" \"*.json\" \".github/workflows/*.yml\" \".github/copilot-instructions.md\" \"README.md\"",
+    "test:scenarios:offline": "node --import tsx --test tests/scenarios/*.test.ts",
+    "test:quality": "node --import tsx --test tests/quality/*.test.ts",
+    "check:offline": "npm run typecheck && npm run lint && npm run format:check && npm run test:quality && npm run test:preflight && npm run test:scenarios:offline && npm run test:smoke:offline"
   },
   "overrides": {
     "body-parser": "2.4.0",

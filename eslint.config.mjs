@@ -11,6 +11,10 @@ export default tseslint.config(
   {
     files: ['**/*.ts'],
     languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
       globals: {
         ...globals.node,
         $: 'readonly',
@@ -19,6 +23,9 @@ export default tseslint.config(
         driver: 'readonly',
         expect: 'readonly',
       },
+    },
+    rules: {
+      '@typescript-eslint/no-misused-promises': 'error',
     },
   },
 );
