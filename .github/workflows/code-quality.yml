@@ -2,7 +2,7 @@
 # Advisory: reports findings and a job summary but does not fail the build.
 # Separate from the repo's own quality.yml, which is unchanged.
 name: Code quality
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
