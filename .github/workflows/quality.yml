@@ -1,8 +1,10 @@
+# Manual only: GitHub Actions minutes are reserved for production deployment
+# builds (owner decision, 12 Nov 2026). Run `npm run check:offline` locally; the
+# ReleaseReady Dev app runs code-quality scans on every push.
 name: Quality checks
 
 on:
-  push:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   checks:
