@@ -1,0 +1,13 @@
+# Shared code-quality scan (replaces SonarQube over time, Jira RRDPLAT-44).
+# Advisory: reports findings and a job summary but does not fail the build.
+# Separate from the repo's own quality.yml, which is unchanged.
+name: Code quality
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  quality:
+    uses: noisegatemusicstudio/code-quality/.github/workflows/quality-scan.yml@42901d2ec06886ca0cc6b051b1690cf1f9b92959
+    with:
+      code-quality-ref: 42901d2ec06886ca0cc6b051b1690cf1f9b92959
+      enforce: false
