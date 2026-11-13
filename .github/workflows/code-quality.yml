@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   quality:
-    uses: noisegatemusicstudio/code-quality/.github/workflows/quality-scan.yml@b8365d5575fedd5f82f8ae1d673d848b4716526b
+    uses: noisegatemusicstudio/code-quality/.github/workflows/quality-scan.yml@a72b486c17dfd6962a20ab5362f4c7480cd7aedb
     with:
-      code-quality-ref: b8365d5575fedd5f82f8ae1d673d848b4716526b
+      code-quality-ref: a72b486c17dfd6962a20ab5362f4c7480cd7aedb
       enforce: true
