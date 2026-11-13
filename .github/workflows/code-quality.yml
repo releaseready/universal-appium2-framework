@@ -11,4 +11,4 @@ jobs:
     uses: noisegatemusicstudio/code-quality/.github/workflows/quality-scan.yml@42901d2ec06886ca0cc6b051b1690cf1f9b92959
     with:
       code-quality-ref: 42901d2ec06886ca0cc6b051b1690cf1f9b92959
-      enforce: false
+      enforce: true
