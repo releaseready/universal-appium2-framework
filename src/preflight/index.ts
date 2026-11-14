@@ -246,13 +246,13 @@ function metadataFailure(
 
 async function checkMetadata(probes: Probes, add: Add) {
   let metadata: unknown;
-  let satisfies: (version: string, range: string) => boolean;
+  let satisfiesRange: (version: string, range: string) => boolean;
   let valid: (version: string) => string | null;
   try {
     metadata = await probes.metadata();
     // Reuse the maintained parser from the locked tree without executing mobile packages.
     const require = createRequire(__filename);
-    satisfies = require("semver/functions/satisfies");
+    satisfiesRange = require("semver/functions/satisfies");
     valid = require("semver/functions/valid");
   } catch (error) {
     const state = error instanceof SyntaxError ? "invalid" : "unavailable";
@@ -287,7 +287,7 @@ async function checkMetadata(probes: Probes, add: Add) {
   const runtimeValid =
     range === ">=22.19.0" &&
     valid(probes.nodeVersion) !== null &&
-    satisfies(probes.nodeVersion, range);
+    satisfiesRange(probes.nodeVersion, range);
   add(
     "runtime",
     runtimeValid ? "verified" : "invalid",
@@ -317,7 +317,7 @@ async function checkMetadata(probes: Probes, add: Add) {
         rootLock.devDependencies[name] === version &&
         entry.version === version &&
         actual.version === version &&
-        satisfies(
+        satisfiesRange(
           version,
           name === "appium"
             ? ">=3 <4"
